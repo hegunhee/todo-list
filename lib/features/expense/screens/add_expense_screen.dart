@@ -4,9 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expense_tracker/features/expense/models/expense.dart';
 import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
 
-/// 지출 추가 화면
+/// 지출 추가/수정 화면
 class AddExpenseScreen extends ConsumerStatefulWidget {
-  const AddExpenseScreen({super.key});
+  final Expense? expense; // 수정할 지출 (null이면 추가 모드)
+  
+  const AddExpenseScreen({super.key, this.expense});
 
   @override
   ConsumerState<AddExpenseScreen> createState() => _AddExpenseScreenState();
@@ -19,6 +21,24 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
 
   ExpenseCategory? _selectedCategory = ExpenseCategory.food;
   ExpenseStatus? _selectedStatus = ExpenseStatus.good;
+  
+  bool get _isEditMode => widget.expense != null;
+  
+  @override
+  void initState() {
+    super.initState();
+    // 수정 모드인 경우 기존 데이터로 초기화
+    if (_isEditMode) {
+      _titleController.text = widget.expense!.title;
+      _amountController.text = widget.expense!.amount.toString().replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+        (Match m) => '${m[1]},',
+      );
+      _memoController.text = widget.expense!.memo ?? '';
+      _selectedCategory = widget.expense!.category;
+      _selectedStatus = widget.expense!.status;
+    }
+  }
 
   @override
   void dispose() {
@@ -60,16 +80,20 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
     final amount = int.tryParse(_amountController.text.replaceAll(',', '')) ?? 0;
 
     final expense = Expense(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      id: _isEditMode ? widget.expense!.id : DateTime.now().millisecondsSinceEpoch.toString(),
       title: _titleController.text,
       amount: amount,
       category: _selectedCategory!,
       status: _selectedStatus!,
-      date: DateTime.now(),
+      date: _isEditMode ? widget.expense!.date : DateTime.now(),
       memo: _memoController.text.isEmpty ? null : _memoController.text,
     );
 
-    ref.read(expenseControllerProvider.notifier).addExpense(expense);
+    if (_isEditMode) {
+      ref.read(expenseControllerProvider.notifier).updateExpense(expense.id, expense);
+    } else {
+      ref.read(expenseControllerProvider.notifier).addExpense(expense);
+    }
     Navigator.pop(context);
   }
 
@@ -82,9 +106,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          '새로운 지출 추가',
-          style: TextStyle(
+        title: Text(
+          _isEditMode ? '지출 수정' : '새로운 지출 추가',
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -296,9 +320,9 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
-                  '저장',
-                  style: TextStyle(
+                child: Text(
+                  _isEditMode ? '수정' : '저장',
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,

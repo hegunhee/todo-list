@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
 import 'package:expense_tracker/features/expense/models/expense.dart';
+import 'package:expense_tracker/features/expense/screens/add_expense_screen.dart';
 import 'package:intl/intl.dart';
 
 /// 검색 화면
@@ -188,14 +189,23 @@ class _ExpenseSearchItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddExpenseScreen(expense: expense),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
         children: [
           // 카테고리 아이콘
           Container(
@@ -206,7 +216,7 @@ class _ExpenseSearchItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
-              _getCategoryIcon(expense.category),
+              expense.category.icon,
               color: _getCategoryColor(expense.category),
               size: 24,
             ),
@@ -274,7 +284,7 @@ class _ExpenseSearchItem extends StatelessWidget {
 
           // 금액
           Text(
-            '-${NumberFormat('#,###').format(expense.amount)}원',
+            '${NumberFormat('#,###').format(expense.amount)}원',
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -282,21 +292,9 @@ class _ExpenseSearchItem extends StatelessWidget {
             ),
           ),
         ],
+        ),
       ),
     );
-  }
-
-  IconData _getCategoryIcon(ExpenseCategory category) {
-    switch (category) {
-      case ExpenseCategory.food:
-        return Icons.restaurant;
-      case ExpenseCategory.transport:
-        return Icons.directions_car;
-      case ExpenseCategory.shopping:
-        return Icons.shopping_bag;
-      case ExpenseCategory.culture:
-        return Icons.movie;
-    }
   }
 
   Color _getCategoryColor(ExpenseCategory category) {
