@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:expense_tracker/features/expense/models/expense.dart';
 import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
+import 'package:expense_tracker/features/expense/screens/add_expense_screen.dart';
 
 /// 지출 목록 화면
 class ExpenseListScreen extends ConsumerWidget {
@@ -35,39 +36,42 @@ class ExpenseListScreen extends ConsumerWidget {
           Container(
             color: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _FilterChip(
-                  label: '전체',
-                  isSelected: selectedFilter == null,
-                  onTap: () => ref.read(filterControllerProvider.notifier).setFilter(null),
-                ),
-                const SizedBox(width: 8),
-                _FilterChip(
-                  label: '잘 쓴 돈',
-                  isSelected: selectedFilter == ExpenseStatus.good,
-                  onTap: () => ref.read(filterControllerProvider.notifier).setFilter(ExpenseStatus.good),
-                ),
-                const SizedBox(width: 8),
-                _FilterChip(
-                  label: '그저 그런 돈',
-                  isSelected: selectedFilter == ExpenseStatus.normal,
-                  onTap: () => ref.read(filterControllerProvider.notifier).setFilter(ExpenseStatus.normal),
-                ),
-                const SizedBox(width: 8),
-                _FilterChip(
-                  label: '아까운 돈',
-                  isSelected: selectedFilter == ExpenseStatus.regret,
-                  onTap: () => ref.read(filterControllerProvider.notifier).setFilter(ExpenseStatus.regret),
-                ),
-                const SizedBox(width: 8),
-                _FilterChip(
-                  label: '후회한 돈',
-                  isSelected: selectedFilter == ExpenseStatus.bad,
-                  onTap: () => ref.read(filterControllerProvider.notifier).setFilter(ExpenseStatus.bad),
-                ),
-              ],
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  _FilterChip(
+                    label: '전체',
+                    isSelected: selectedFilter == null,
+                    onTap: () => ref.read(filterControllerProvider.notifier).setFilter(null),
+                  ),
+                  const SizedBox(width: 8),
+                  _FilterChip(
+                    label: '잘 쓴 돈',
+                    isSelected: selectedFilter == ExpenseStatus.good,
+                    onTap: () => ref.read(filterControllerProvider.notifier).setFilter(ExpenseStatus.good),
+                  ),
+                  const SizedBox(width: 8),
+                  _FilterChip(
+                    label: '그저 그런 돈',
+                    isSelected: selectedFilter == ExpenseStatus.normal,
+                    onTap: () => ref.read(filterControllerProvider.notifier).setFilter(ExpenseStatus.normal),
+                  ),
+                  const SizedBox(width: 8),
+                  _FilterChip(
+                    label: '아까운 돈',
+                    isSelected: selectedFilter == ExpenseStatus.regret,
+                    onTap: () => ref.read(filterControllerProvider.notifier).setFilter(ExpenseStatus.regret),
+                  ),
+                  const SizedBox(width: 8),
+                  _FilterChip(
+                    label: '후회한 돈',
+                    isSelected: selectedFilter == ExpenseStatus.bad,
+                    onTap: () => ref.read(filterControllerProvider.notifier).setFilter(ExpenseStatus.bad),
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -147,7 +151,10 @@ class ExpenseListScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO: 지출 추가 화면으로 이동
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddExpenseScreen()),
+          );
         },
         backgroundColor: const Color(0xFF4CAF50),
         child: const Icon(Icons.add),

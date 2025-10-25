@@ -5,8 +5,7 @@ enum ExpenseCategory {
   food('식비', Icons.restaurant),
   transport('교통', Icons.directions_car),
   shopping('쇼핑', Icons.shopping_bag),
-  culture('문화/생활', Icons.movie),
-  etc('기타', Icons.more_horiz);
+  culture('문화생활', Icons.movie);
 
   const ExpenseCategory(this.label, this.icon);
   final String label;
