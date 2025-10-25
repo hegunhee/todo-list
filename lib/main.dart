@@ -7,10 +7,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:template/core/controllers/theme_controller.dart';
-import 'package:template/core/themes/app_theme.dart';
-import 'package:template/features/todo/screens/sample_screen.dart';
-import 'package:template/firebase_options.dart';
+import 'package:expense_tracker/core/controllers/theme_controller.dart';
+import 'package:expense_tracker/core/themes/app_theme.dart';
+import 'package:expense_tracker/features/expense/screens/expense_list_screen.dart';
+import 'package:expense_tracker/firebase_options.dart';
 
 /// 앱 시작점
 void main() {
@@ -63,14 +63,14 @@ class MyApp extends ConsumerWidget {
     final themeMode = ref.watch(themeControllerProvider);
 
     return MaterialApp(
-      title: 'Blueberry Template',
+      title: '쓰는 가계부',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
       locale: context.locale,
       supportedLocales: context.supportedLocales,
       localizationsDelegates: context.localizationDelegates,
-      home: const SampleScreen(),
+      home: const ExpenseListScreen(),
     );
   }
 }
