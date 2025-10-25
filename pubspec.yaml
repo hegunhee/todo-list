@@ -34,6 +34,7 @@ dev_dependencies:
   
   hive_generator: ^2.0.1
   build_runner: ^2.4.13
+  flutter_launcher_icons: ^0.14.1
 
 flutter:
   uses-material-design: true
@@ -41,3 +42,11 @@ flutter:
   assets:
     - assets/
     - assets/translations/
+    - assets/images/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  adaptive_icon_background: "#F5F5DC"
+  adaptive_icon_foreground: "assets/images/app_icon.png"
