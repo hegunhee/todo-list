@@ -4,11 +4,10 @@ import 'package:expense_tracker/features/expense/services/expense_service.dart';
 /// Mock ExpenseService for testing
 class MockExpenseService implements ExpenseService {
   final List<Expense> _expenses = [];
-  bool _initialized = false;
 
   @override
   Future<void> init() async {
-    _initialized = true;
+    // Mock initialization
   }
 
   @override

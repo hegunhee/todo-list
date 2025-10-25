@@ -342,19 +342,6 @@ class _ExpenseSearchItem extends StatelessWidget {
     }
   }
 
-  Color _getCategoryColor(ExpenseCategory category) {
-    switch (category) {
-      case ExpenseCategory.food:
-        return Colors.orange;
-      case ExpenseCategory.transport:
-        return Colors.blue;
-      case ExpenseCategory.shopping:
-        return Colors.pink;
-      case ExpenseCategory.culture:
-        return Colors.purple;
-    }
-  }
-
   String _getCategoryLabel(ExpenseCategory category) {
     switch (category) {
       case ExpenseCategory.food:
