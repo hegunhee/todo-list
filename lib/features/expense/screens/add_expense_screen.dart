@@ -97,6 +97,81 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
     Navigator.pop(context);
   }
 
+  void _showDeleteDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text(
+            '삭제 확인',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          content: const Text(
+            '삭제 하시겠습니까?',
+            style: TextStyle(
+              fontSize: 16,
+              color: Color(0xFF666666),
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              ),
+              child: const Text(
+                '취소',
+                style: TextStyle(
+                  color: Color(0xFF999999),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(expenseControllerProvider.notifier).deleteExpense(widget.expense!.id);
+                Navigator.of(dialogContext).pop(); // 다이얼로그 닫기
+                Navigator.of(context).pop(); // 수정 화면 닫기
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('삭제되었습니다'),
+                    backgroundColor: Color(0xFF4CAF50),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF4CAF50),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                '삭제',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,6 +192,14 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
+        actions: _isEditMode
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.delete_outline, color: Colors.black),
+                  onPressed: () => _showDeleteDialog(context, ref),
+                ),
+              ]
+            : null,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),

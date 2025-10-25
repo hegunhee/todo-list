@@ -235,13 +235,13 @@ class _FilterChip extends StatelessWidget {
 }
 
 /// 지출 카드
-class _ExpenseCard extends StatelessWidget {
+class _ExpenseCard extends ConsumerWidget {
   const _ExpenseCard({required this.expense});
 
   final Expense expense;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -250,6 +250,9 @@ class _ExpenseCard extends StatelessWidget {
             builder: (context) => AddExpenseScreen(expense: expense),
           ),
         );
+      },
+      onLongPress: () {
+        _showDeleteDialog(context, ref);
       },
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -340,6 +343,80 @@ class _ExpenseCard extends StatelessWidget {
         ],
         ),
       ),
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text(
+            '삭제 확인',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          content: const Text(
+            '삭제 하시겠습니까?',
+            style: TextStyle(
+              fontSize: 16,
+              color: Color(0xFF666666),
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              ),
+              child: const Text(
+                '취소',
+                style: TextStyle(
+                  color: Color(0xFF999999),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(expenseControllerProvider.notifier).deleteExpense(expense.id);
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('삭제되었습니다'),
+                    backgroundColor: Color(0xFF4CAF50),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF4CAF50),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                '삭제',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
