@@ -5,6 +5,7 @@ import 'package:expense_tracker/features/expense/models/expense.dart';
 import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
 import 'package:expense_tracker/features/expense/screens/add_expense_screen.dart';
 import 'package:expense_tracker/features/expense/screens/search_screen.dart';
+import 'package:expense_tracker/features/expense/screens/statistics_screen.dart';
 
 /// 지출 목록 화면
 class ExpenseListScreen extends ConsumerWidget {
@@ -31,6 +32,21 @@ class ExpenseListScreen extends ConsumerWidget {
         elevation: 0,
         centerTitle: true,
         actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.bar_chart,
+              color: Colors.black,
+              size: 24,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const StatisticsScreen(),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(
               Icons.search,
