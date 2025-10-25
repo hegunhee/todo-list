@@ -307,14 +307,40 @@ class _ExpenseCard extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '${_getStatusEmoji(expense.status)} ${expense.status.label}',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: expense.status.color,
+                // 감정 변경이 있는 경우
+                if (expense.previousStatus != null && expense.statusChangeReason != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${_getStatusEmoji(expense.previousStatus!)} ${expense.previousStatus!.label} → ${_getStatusEmoji(expense.status)} ${expense.status.label}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: expense.status.color,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        expense.statusChangeReason!,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: expense.status.color,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  )
+                else
+                  Text(
+                    '${_getStatusEmoji(expense.status)} ${expense.status.label}',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: expense.status.color,
+                    ),
                   ),
-                ),
                 if (expense.memo != null) ...[
                   const SizedBox(height: 4),
                   Text(

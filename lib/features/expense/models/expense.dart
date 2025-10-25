@@ -54,6 +54,10 @@ class Expense {
   final DateTime date;
   @HiveField(6)
   final String? memo;
+  @HiveField(7)
+  final ExpenseStatus? previousStatus;
+  @HiveField(8)
+  final String? statusChangeReason;
 
   const Expense({
     required this.id,
@@ -63,6 +67,8 @@ class Expense {
     required this.status,
     required this.date,
     this.memo,
+    this.previousStatus,
+    this.statusChangeReason,
   });
 
   Expense copyWith({
@@ -73,6 +79,8 @@ class Expense {
     ExpenseStatus? status,
     DateTime? date,
     String? memo,
+    ExpenseStatus? previousStatus,
+    String? statusChangeReason,
   }) {
     return Expense(
       id: id ?? this.id,
@@ -82,6 +90,8 @@ class Expense {
       status: status ?? this.status,
       date: date ?? this.date,
       memo: memo ?? this.memo,
+      previousStatus: previousStatus ?? this.previousStatus,
+      statusChangeReason: statusChangeReason ?? this.statusChangeReason,
     );
   }
 }

@@ -18,11 +18,14 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   final _memoController = TextEditingController();
+  final _statusChangeReasonController = TextEditingController();
 
   ExpenseCategory? _selectedCategory = ExpenseCategory.food;
   ExpenseStatus? _selectedStatus = ExpenseStatus.good;
+  ExpenseStatus? _originalStatus; // 원래 감정 상태 저장
   
   bool get _isEditMode => widget.expense != null;
+  bool get _isStatusChanged => _isEditMode && _originalStatus != null && _originalStatus != _selectedStatus;
   
   @override
   void initState() {
@@ -37,6 +40,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
       _memoController.text = widget.expense!.memo ?? '';
       _selectedCategory = widget.expense!.category;
       _selectedStatus = widget.expense!.status;
+      _originalStatus = widget.expense!.status; // 원래 상태 저장
     }
   }
 
@@ -45,6 +49,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
     _titleController.dispose();
     _amountController.dispose();
     _memoController.dispose();
+    _statusChangeReasonController.dispose();
     super.dispose();
   }
 
@@ -77,6 +82,17 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
       return;
     }
 
+    // 감정이 변경되었는데 변경 사유를 입력하지 않은 경우
+    if (_isStatusChanged && _statusChangeReasonController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('감정 변경 사유를 입력해주세요'),
+          backgroundColor: Color(0xFFF44336),
+        ),
+      );
+      return;
+    }
+
     final amount = int.tryParse(_amountController.text.replaceAll(',', '')) ?? 0;
 
     final expense = Expense(
@@ -87,6 +103,8 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
       status: _selectedStatus!,
       date: _isEditMode ? widget.expense!.date : DateTime.now(),
       memo: _memoController.text.isEmpty ? null : _memoController.text,
+      previousStatus: _isStatusChanged ? _originalStatus : widget.expense?.previousStatus,
+      statusChangeReason: _isStatusChanged ? _statusChangeReasonController.text.trim() : widget.expense?.statusChangeReason,
     );
 
     if (_isEditMode) {
@@ -356,6 +374,47 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                 );
               }).toList(),
             ),
+
+            // 감정 변경 사유 (감정이 변경된 경우에만 표시)
+            if (_isStatusChanged) ...[
+              const SizedBox(height: 24),
+              const Text(
+                '변경 사유',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _statusChangeReasonController,
+                maxLines: 2,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+                decoration: InputDecoration(
+                  hintText: '왜 생각이 바뀌었나요?',
+                  hintStyle: const TextStyle(color: Color(0xFF666666)),
+                  filled: true,
+                  fillColor: const Color(0xFFFFF9E6),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFFFB74D), width: 2),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFFFB74D), width: 2),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFFF9800), width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.all(16),
+                ),
+              ),
+            ],
 
             const SizedBox(height: 24),
 

@@ -263,15 +263,40 @@ class _ExpenseSearchItem extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  // 감정 상태
-                  Text(
-                    '${_getStatusEmoji(expense.status)} ${_getStatusLabel(expense.status)}',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: _getStatusColor(expense.status),
+                  // 감정 상태 (변경 이력 포함)
+                  if (expense.previousStatus != null && expense.statusChangeReason != null)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${_getStatusEmoji(expense.previousStatus!)} ${_getStatusLabel(expense.previousStatus!)} → ${_getStatusEmoji(expense.status)} ${_getStatusLabel(expense.status)}',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: _getStatusColor(expense.status),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          expense.statusChangeReason!,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: _getStatusColor(expense.status),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    )
+                  else
+                    Text(
+                      '${_getStatusEmoji(expense.status)} ${_getStatusLabel(expense.status)}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: _getStatusColor(expense.status),
+                      ),
                     ),
-                  ),
                   // 메모 (있는 경우)
                   if (expense.memo != null && expense.memo!.isNotEmpty) ...[
                     const SizedBox(height: 4),
