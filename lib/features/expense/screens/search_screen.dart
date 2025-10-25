@@ -273,7 +273,7 @@ class _ExpenseSearchItem extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: _getStatusColor(expense.status),
+                            color: expense.status.color,
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -281,7 +281,7 @@ class _ExpenseSearchItem extends StatelessWidget {
                           expense.statusChangeReason!,
                           style: TextStyle(
                             fontSize: 12,
-                            color: _getStatusColor(expense.status),
+                            color: expense.status.color,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -294,7 +294,7 @@ class _ExpenseSearchItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: _getStatusColor(expense.status),
+                        color: expense.status.color,
                       ),
                     ),
                   // 메모 (있는 경우)
@@ -381,16 +381,4 @@ class _ExpenseSearchItem extends StatelessWidget {
     }
   }
 
-  Color _getStatusColor(ExpenseStatus status) {
-    switch (status) {
-      case ExpenseStatus.good:
-        return Colors.green;
-      case ExpenseStatus.normal:
-        return Colors.blue;
-      case ExpenseStatus.bad:
-        return Colors.orange;
-      case ExpenseStatus.regret:
-        return Colors.red;
-    }
-  }
 }
