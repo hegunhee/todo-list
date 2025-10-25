@@ -29,6 +29,18 @@ class ExpenseListScreen extends ConsumerWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.search,
+              color: Colors.black,
+              size: 24,
+            ),
+            onPressed: () {
+              // TODO: 검색 기능 구현
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
