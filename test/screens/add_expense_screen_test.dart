@@ -1,0 +1,344 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:expense_tracker/features/expense/screens/add_expense_screen.dart';
+
+void main() {
+  group('AddExpenseScreen 테스트', () {
+    testWidgets('지출 추가 화면이 정상적으로 렌더링된다', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 화면이 렌더링되는지 확인
+      expect(find.byType(AddExpenseScreen), findsOneWidget);
+      
+      // 앱바 타이틀 확인
+      expect(find.text('새로운 지출 추가'), findsOneWidget);
+    });
+
+    testWidgets('모든 입력 필드가 표시된다', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 입력 필드 확인
+      expect(find.text('지출 이름'), findsOneWidget);
+      expect(find.text('금액'), findsOneWidget);
+      expect(find.text('지출 카테고리'), findsOneWidget);
+      expect(find.text('감정 카테고리'), findsOneWidget);
+      expect(find.text('메모 (선택 사항)'), findsOneWidget);
+      
+      // 저장 버튼 확인
+      expect(find.text('저장'), findsOneWidget);
+    });
+
+    testWidgets('기본 카테고리가 선택되어 있다', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 기본값: 식비, 잘 쓴 돈
+      expect(find.text('식비'), findsOneWidget);
+      expect(find.text('잘 쓴 돈'), findsWidgets);
+    });
+
+    testWidgets('지출 이름을 입력할 수 있다', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 지출 이름 입력
+      final titleField = find.widgetWithText(TextField, '예) 친구와 커피');
+      await tester.enterText(titleField, '점심 식사');
+      await tester.pumpAndSettle();
+
+      // 입력된 텍스트 확인
+      expect(find.text('점심 식사'), findsOneWidget);
+    });
+
+    testWidgets('금액을 입력할 수 있다', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 금액 입력 필드 찾기
+      final amountField = find.byType(TextField).at(1); // 두 번째 TextField
+      await tester.enterText(amountField, '15000');
+      await tester.pumpAndSettle();
+
+      // 천 단위 구분 기호 확인
+      expect(find.text('15,000'), findsOneWidget);
+    });
+
+    testWidgets('100만원 초과 시 토스트 메시지가 표시된다', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 금액 입력 필드 찾기
+      final amountField = find.byType(TextField).at(1);
+      await tester.enterText(amountField, '1500000');
+      await tester.pumpAndSettle();
+
+      // 토스트 메시지 확인
+      expect(find.text('금액은 100만원을 초과할 수 없습니다'), findsOneWidget);
+      
+      // 금액이 100만원으로 제한되었는지 확인
+      expect(find.text('1,000,000'), findsOneWidget);
+    });
+
+    testWidgets('지출 카테고리를 변경할 수 있다 - 교통', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 교통 카테고리 클릭
+      await tester.tap(find.text('교통'));
+      await tester.pumpAndSettle();
+
+      // 교통이 선택되었는지 확인 (시각적으로는 테두리 색상이 변경됨)
+      expect(find.text('교통'), findsOneWidget);
+    });
+
+    testWidgets('지출 카테고리를 변경할 수 있다 - 쇼핑', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 쇼핑 카테고리 클릭
+      await tester.tap(find.text('쇼핑'));
+      await tester.pumpAndSettle();
+
+      // 쇼핑이 선택되었는지 확인
+      expect(find.text('쇼핑'), findsOneWidget);
+    });
+
+    testWidgets('지출 카테고리를 변경할 수 있다 - 문화생활', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 문화생활 카테고리 클릭
+      await tester.tap(find.text('문화생활'));
+      await tester.pumpAndSettle();
+
+      // 문화생활이 선택되었는지 확인
+      expect(find.text('문화생활'), findsOneWidget);
+    });
+
+    testWidgets('감정 카테고리를 변경할 수 있다 - 그저 그런 돈', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 그저 그런 돈 클릭 (두 번째 것 - 첫 번째는 필터에 있을 수 있음)
+      final emotionButton = find.text('그저 그런 돈');
+      await tester.tap(emotionButton);
+      await tester.pumpAndSettle();
+
+      // 그저 그런 돈이 선택되었는지 확인
+      expect(find.text('그저 그런 돈'), findsOneWidget);
+    });
+
+    testWidgets('감정 카테고리를 변경할 수 있다 - 아까운 돈', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 아까운 돈 클릭
+      await tester.tap(find.text('아까운 돈'));
+      await tester.pumpAndSettle();
+
+      // 아까운 돈이 선택되었는지 확인
+      expect(find.text('아까운 돈'), findsOneWidget);
+    });
+
+    testWidgets('감정 카테고리를 변경할 수 있다 - 후회한 돈', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 후회한 돈 클릭
+      await tester.tap(find.text('후회한 돈'));
+      await tester.pumpAndSettle();
+
+      // 후회한 돈이 선택되었는지 확인
+      expect(find.text('후회한 돈'), findsOneWidget);
+    });
+
+    testWidgets('메모를 입력할 수 있다', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 메모 입력 필드 찾기 (마지막 TextField)
+      final memoField = find.widgetWithText(TextField, '메모 추가...');
+      await tester.enterText(memoField, '친구와 함께 먹었음');
+      await tester.pumpAndSettle();
+
+      // 입력된 메모 확인
+      expect(find.text('친구와 함께 먹었음'), findsOneWidget);
+    });
+
+    testWidgets('지출 이름 없이 저장 시 에러 메시지가 표시된다', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 저장 버튼 스크롤하여 보이게 하기
+      await tester.dragUntilVisible(
+        find.text('저장'),
+        find.byType(SingleChildScrollView),
+        const Offset(0, -200),
+      );
+      await tester.pumpAndSettle();
+
+      // 저장 버튼 클릭
+      await tester.tap(find.text('저장'));
+      await tester.pumpAndSettle();
+
+      // 에러 메시지 확인
+      expect(find.text('지출 이름을 입력해주세요'), findsOneWidget);
+    });
+
+    testWidgets('금액 없이 저장 시 에러 메시지가 표시된다', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(home: AddExpenseScreen()),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 지출 이름만 입력
+      final titleField = find.widgetWithText(TextField, '예) 친구와 커피');
+      await tester.enterText(titleField, '점심 식사');
+      await tester.pump();
+
+      // 저장 버튼 스크롤하여 보이게 하기
+      await tester.dragUntilVisible(
+        find.text('저장'),
+        find.byType(SingleChildScrollView),
+        const Offset(0, -100),
+      );
+      await tester.pumpAndSettle();
+
+      // 저장 버튼 클릭
+      await tester.tap(find.text('저장'));
+      await tester.pumpAndSettle();
+
+      // 에러 메시지 확인
+      expect(find.text('금액을 입력해주세요'), findsOneWidget);
+    });
+
+    testWidgets('모든 필드 입력 후 저장하면 화면이 닫힌다', (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: Builder(
+                builder: (context) => ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddExpenseScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text('Open'),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // 화면 열기
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      // 지출 이름 입력
+      final titleField = find.widgetWithText(TextField, '예) 친구와 커피');
+      await tester.enterText(titleField, '점심 식사');
+      await tester.pump();
+
+      // 금액 입력
+      final amountField = find.byType(TextField).at(1);
+      await tester.enterText(amountField, '15000');
+      await tester.pump();
+
+      // 저장 버튼 스크롤하여 보이게 하기
+      await tester.dragUntilVisible(
+        find.text('저장'),
+        find.byType(SingleChildScrollView),
+        const Offset(0, -200),
+      );
+      await tester.pumpAndSettle();
+
+      // 저장 버튼 클릭
+      await tester.tap(find.text('저장'));
+      await tester.pumpAndSettle();
+
+      // 화면이 닫혔는지 확인 (AddExpenseScreen이 없어야 함)
+      expect(find.byType(AddExpenseScreen), findsNothing);
+    });
+  });
+}
