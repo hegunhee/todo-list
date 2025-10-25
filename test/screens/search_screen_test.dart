@@ -76,7 +76,7 @@ void main() {
       // 검색 결과 확인
       expect(find.text('검색 결과'), findsOneWidget);
       expect(find.text('친구랑 점심'), findsOneWidget);
-      expect(find.text('-15,000원'), findsOneWidget);
+      expect(find.text('15,000원'), findsOneWidget);
     });
 
     testWidgets('메모로 검색할 수 있다', (tester) async {
@@ -172,7 +172,7 @@ void main() {
 
       // 검색 결과 확인
       expect(find.text('비싼 커피'), findsOneWidget);
-      expect(find.text('-7,000원'), findsOneWidget);
+      expect(find.text('7,000원'), findsOneWidget);
     });
 
     testWidgets('검색 결과에 카테고리가 표시된다', (tester) async {

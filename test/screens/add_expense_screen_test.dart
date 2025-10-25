@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
+import 'package:expense_tracker/features/expense/models/expense.dart';
 import 'package:expense_tracker/features/expense/screens/add_expense_screen.dart';
 import '../mocks/mock_expense_service.dart';
 
@@ -389,6 +390,245 @@ void main() {
 
       // 화면이 닫혔는지 확인 (AddExpenseScreen이 없어야 함)
       expect(find.byType(AddExpenseScreen), findsNothing);
+    });
+  });
+
+  group('AddExpenseScreen 수정 모드 테스트', () {
+    testWidgets('수정 모드로 열리면 "지출 수정" 타이틀이 표시된다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '테스트 지출',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 앱바 타이틀 확인
+      expect(find.text('지출 수정'), findsOneWidget);
+      expect(find.text('새로운 지출 추가'), findsNothing);
+    });
+
+    testWidgets('수정 모드로 열리면 기존 데이터가 표시된다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '점심 식사',
+        amount: 15000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+        memo: '맛있었음',
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 기존 데이터 확인
+      expect(find.text('점심 식사'), findsOneWidget);
+      expect(find.text('15,000'), findsOneWidget);
+      expect(find.text('맛있었음'), findsOneWidget);
+    });
+
+    testWidgets('수정 모드에서 버튼 텍스트가 "수정"으로 표시된다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '테스트 지출',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 저장 버튼 스크롤하여 보이게 하기
+      await tester.dragUntilVisible(
+        find.text('수정'),
+        find.byType(SingleChildScrollView),
+        const Offset(0, -200),
+      );
+      await tester.pumpAndSettle();
+
+      // 버튼 텍스트 확인
+      expect(find.text('수정'), findsOneWidget);
+      expect(find.text('저장'), findsNothing);
+    });
+
+    testWidgets('수정 모드에서 지출 이름을 변경할 수 있다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '점심 식사',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 지출 이름 변경
+      final titleField = find.widgetWithText(TextField, '점심 식사');
+      await tester.enterText(titleField, '저녁 식사');
+      await tester.pumpAndSettle();
+
+      // 변경된 텍스트 확인
+      expect(find.text('저녁 식사'), findsOneWidget);
+    });
+
+    testWidgets('수정 모드에서 금액을 변경할 수 있다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '점심 식사',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 금액 변경
+      final amountField = find.byType(TextField).at(1);
+      await tester.enterText(amountField, '20000');
+      await tester.pumpAndSettle();
+
+      // 변경된 금액 확인
+      expect(find.text('20,000'), findsOneWidget);
+    });
+
+    testWidgets('수정 모드에서 카테고리를 변경할 수 있다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '점심 식사',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 교통 카테고리 클릭
+      await tester.tap(find.text('교통'));
+      await tester.pumpAndSettle();
+
+      // 교통이 선택되었는지 확인
+      expect(find.text('교통'), findsOneWidget);
+    });
+
+    testWidgets('수정 모드에서 감정 상태를 변경할 수 있다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '점심 식사',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 그저 그런 돈 클릭
+      await tester.tap(find.text('그저 그런 돈'));
+      await tester.pumpAndSettle();
+
+      // 선택되었는지 확인
+      expect(find.text('그저 그런 돈'), findsOneWidget);
+    });
+
+    testWidgets('수정 모드에서 메모를 변경할 수 있다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '점심 식사',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+        memo: '맛있었음',
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 메모 변경
+      final memoField = find.widgetWithText(TextField, '맛있었음');
+      await tester.enterText(memoField, '별로였음');
+      await tester.pumpAndSettle();
+
+      // 변경된 메모 확인
+      expect(find.text('별로였음'), findsOneWidget);
     });
   });
 }
