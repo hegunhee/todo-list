@@ -176,6 +176,15 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                   _amountController.selection = TextSelection.fromPosition(
                     TextPosition(offset: _amountController.text.length),
                   );
+                  
+                  // 토스트 메시지 표시
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('금액은 100만원을 초과할 수 없습니다'),
+                      duration: Duration(seconds: 2),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
                 }
               },
             ),
