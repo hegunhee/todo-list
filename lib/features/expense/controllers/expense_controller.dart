@@ -2,13 +2,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expense_tracker/features/expense/models/expense.dart';
 import 'package:expense_tracker/features/expense/services/expense_service.dart';
 
+/// ExpenseService Provider
+final expenseServiceProvider = Provider<ExpenseService>((ref) {
+  final service = ExpenseService();
+  // 초기화는 ExpenseController에서 수행
+  return service;
+});
+
 /// 지출 컨트롤러
 class ExpenseController extends AsyncNotifier<List<Expense>> {
   late final ExpenseService _service;
 
   @override
   Future<List<Expense>> build() async {
-    _service = ExpenseService();
+    _service = ref.read(expenseServiceProvider);
     await _service.init();
     return _service.getAllExpenses();
   }

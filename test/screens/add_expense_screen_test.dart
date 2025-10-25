@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
 import 'package:expense_tracker/features/expense/screens/add_expense_screen.dart';
+import '../mocks/mock_expense_service.dart';
 
 void main() {
   group('AddExpenseScreen 테스트', () {
     testWidgets('지출 추가 화면이 정상적으로 렌더링된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -23,8 +28,11 @@ void main() {
 
     testWidgets('모든 입력 필드가 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -43,8 +51,11 @@ void main() {
 
     testWidgets('기본 카테고리가 선택되어 있다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -57,8 +68,11 @@ void main() {
 
     testWidgets('지출 이름을 입력할 수 있다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -75,8 +89,11 @@ void main() {
 
     testWidgets('금액을 입력할 수 있다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -93,8 +110,11 @@ void main() {
 
     testWidgets('100만원 초과 시 토스트 메시지가 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -114,8 +134,11 @@ void main() {
 
     testWidgets('지출 카테고리를 변경할 수 있다 - 교통', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -131,8 +154,11 @@ void main() {
 
     testWidgets('지출 카테고리를 변경할 수 있다 - 쇼핑', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -148,8 +174,11 @@ void main() {
 
     testWidgets('지출 카테고리를 변경할 수 있다 - 문화생활', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -165,8 +194,11 @@ void main() {
 
     testWidgets('감정 카테고리를 변경할 수 있다 - 그저 그런 돈', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -183,8 +215,11 @@ void main() {
 
     testWidgets('감정 카테고리를 변경할 수 있다 - 아까운 돈', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -200,8 +235,11 @@ void main() {
 
     testWidgets('감정 카테고리를 변경할 수 있다 - 후회한 돈', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -217,8 +255,11 @@ void main() {
 
     testWidgets('메모를 입력할 수 있다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -235,8 +276,11 @@ void main() {
 
     testWidgets('지출 이름 없이 저장 시 에러 메시지가 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -260,8 +304,11 @@ void main() {
 
     testWidgets('금액 없이 저장 시 에러 메시지가 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: AddExpenseScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: AddExpenseScreen()),
         ),
       );
 
@@ -291,6 +338,9 @@ void main() {
     testWidgets('모든 필드 입력 후 저장하면 화면이 닫힌다', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
           child: MaterialApp(
             home: Scaffold(
               body: Builder(

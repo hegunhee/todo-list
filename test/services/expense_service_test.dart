@@ -30,6 +30,9 @@ void main() {
       // 서비스 초기화
       service = ExpenseService();
       await service.init();
+      
+      // 테스트용 샘플 데이터 추가
+      await _addSampleData(service);
     });
 
     tearDown(() async {
@@ -40,7 +43,7 @@ void main() {
       }
     });
 
-    test('초기화 시 샘플 데이터가 추가된다', () {
+    test('샘플 데이터가 정상적으로 조회된다', () {
       final expenses = service.getAllExpenses();
       
       expect(expenses.length, 5);
@@ -203,4 +206,58 @@ void main() {
       expect(updated.amount, 99999);
     });
   });
+}
+
+/// 테스트용 샘플 데이터 추가 헬퍼 함수
+Future<void> _addSampleData(ExpenseService service) async {
+  final now = DateTime.now();
+  
+  final sampleExpenses = [
+    Expense(
+      id: '1',
+      title: '친구랑 점심',
+      amount: 15000,
+      category: ExpenseCategory.food,
+      status: ExpenseStatus.good,
+      date: now,
+      memo: '맛있었음',
+    ),
+    Expense(
+      id: '2',
+      title: '택시비',
+      amount: 8000,
+      category: ExpenseCategory.transport,
+      status: ExpenseStatus.normal,
+      date: now.subtract(const Duration(days: 1)),
+    ),
+    Expense(
+      id: '3',
+      title: '영화 관람',
+      amount: 14000,
+      category: ExpenseCategory.culture,
+      status: ExpenseStatus.good,
+      date: now.subtract(const Duration(days: 2)),
+    ),
+    Expense(
+      id: '4',
+      title: '충동 구매한 옷',
+      amount: 50000,
+      category: ExpenseCategory.shopping,
+      status: ExpenseStatus.regret,
+      date: now.subtract(const Duration(days: 3)),
+      memo: '별로 안 입을 것 같음',
+    ),
+    Expense(
+      id: '5',
+      title: '비싼 커피',
+      amount: 7000,
+      category: ExpenseCategory.food,
+      status: ExpenseStatus.bad,
+      date: now.subtract(const Duration(days: 4)),
+    ),
+  ];
+  
+  for (final expense in sampleExpenses) {
+    await service.addExpense(expense);
+  }
 }

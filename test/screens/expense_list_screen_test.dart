@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
 import 'package:expense_tracker/features/expense/screens/expense_list_screen.dart';
+import '../mocks/mock_expense_service.dart';
 
 void main() {
   group('ExpenseListScreen 테스트', () {
     testWidgets('지출 목록 화면이 정상적으로 렌더링된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: ExpenseListScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: ExpenseListScreen()),
         ),
       );
 
@@ -21,8 +26,11 @@ void main() {
 
     testWidgets('모든 필터 버튼이 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: ExpenseListScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: ExpenseListScreen()),
         ),
       );
 
@@ -43,8 +51,11 @@ void main() {
 
     testWidgets('전체 필터 클릭 시 "총 지출"이 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: ExpenseListScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: ExpenseListScreen()),
         ),
       );
 
@@ -60,8 +71,11 @@ void main() {
 
     testWidgets('잘 쓴 돈 필터 클릭 시 "잘 쓴 돈"이 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: ExpenseListScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: ExpenseListScreen()),
         ),
       );
 
@@ -78,8 +92,11 @@ void main() {
 
     testWidgets('그저 그런 돈 필터 클릭 시 "그저 그런 돈"이 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: ExpenseListScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: ExpenseListScreen()),
         ),
       );
 
@@ -96,8 +113,11 @@ void main() {
 
     testWidgets('아까운 돈 필터 클릭 시 "아까운 돈"이 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: ExpenseListScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: ExpenseListScreen()),
         ),
       );
 
@@ -114,8 +134,11 @@ void main() {
 
     testWidgets('후회한 돈 필터 클릭 시 "후회한 돈"이 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: ExpenseListScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: ExpenseListScreen()),
         ),
       );
 
@@ -137,8 +160,11 @@ void main() {
 
     testWidgets('총 금액이 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: ExpenseListScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: ExpenseListScreen()),
         ),
       );
 
@@ -150,8 +176,11 @@ void main() {
 
     testWidgets('+ 버튼이 표시된다', (tester) async {
       await tester.pumpWidget(
-        const ProviderScope(
-          child: MaterialApp(home: ExpenseListScreen()),
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: const MaterialApp(home: ExpenseListScreen()),
         ),
       );
 
