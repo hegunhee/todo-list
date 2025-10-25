@@ -217,8 +217,8 @@ void main() {
       await tester.enterText(find.byType(TextField), '점심');
       await tester.pumpAndSettle();
 
-      // 감정 상태 확인
-      expect(find.text('잘 쓴 돈'), findsOneWidget);
+      // 감정 상태 확인 (이모티콘 포함)
+      expect(find.textContaining('잘 쓴 돈'), findsOneWidget);
     });
 
     testWidgets('검색어를 지우면 안내 메시지가 다시 표시된다', (tester) async {

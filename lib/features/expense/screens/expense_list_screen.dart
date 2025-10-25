@@ -308,7 +308,7 @@ class _ExpenseCard extends ConsumerWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  expense.status.label,
+                  '${_getStatusEmoji(expense.status)} ${expense.status.label}',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -344,6 +344,19 @@ class _ExpenseCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  String _getStatusEmoji(ExpenseStatus status) {
+    switch (status) {
+      case ExpenseStatus.good:
+        return '😊';
+      case ExpenseStatus.normal:
+        return '😐';
+      case ExpenseStatus.regret:
+        return '😕';
+      case ExpenseStatus.bad:
+        return '😩';
+    }
   }
 
   void _showDeleteDialog(BuildContext context, WidgetRef ref) {

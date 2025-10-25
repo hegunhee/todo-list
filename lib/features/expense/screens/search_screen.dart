@@ -90,7 +90,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           // 검색 결과 헤더
           if (_searchQuery.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
               child: Text(
                 '검색 결과',
                 style: TextStyle(
@@ -109,8 +112,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ? []
                     : expenses.where((expense) {
                         final query = _searchQuery.toLowerCase();
-                        final titleMatch = expense.title.toLowerCase().contains(query);
-                        final memoMatch = expense.memo?.toLowerCase().contains(query) ?? false;
+                        final titleMatch = expense.title.toLowerCase().contains(
+                          query,
+                        );
+                        final memoMatch =
+                            expense.memo?.toLowerCase().contains(query) ??
+                            false;
                         return titleMatch || memoMatch;
                       }).toList();
 
@@ -206,95 +213,108 @@ class _ExpenseSearchItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
-        children: [
-          // 카테고리 아이콘
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: _getCategoryColor(expense.category).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+          children: [
+            // 카테고리 아이콘
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF5F5F5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                expense.category.icon,
+                color: const Color(0xFF666666),
+                size: 24,
+              ),
             ),
-            child: Icon(
-              expense.category.icon,
-              color: _getCategoryColor(expense.category),
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 12),
+            const SizedBox(width: 12),
 
-          // 지출 정보
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  expense.title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text(
-                      _getCategoryLabel(expense.category),
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Colors.grey[600],
-                      ),
+            // 지출 정보
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    expense.title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
                     ),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        _getCategoryLabel(expense.category),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      Text(
+                        ' · ${DateFormat('M월 d일').format(expense.date)}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  // 감정 상태
+                  Text(
+                    '${_getStatusEmoji(expense.status)} ${_getStatusLabel(expense.status)}',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: _getStatusColor(expense.status),
+                    ),
+                  ),
+                  // 메모 (있는 경우)
+                  if (expense.memo != null && expense.memo!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
                     Text(
-                      ' · ${DateFormat('M월 d일').format(expense.date)}',
+                      '메모: ${expense.memo}',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 12,
                         color: Colors.grey[600],
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                ),
-                const SizedBox(height: 8),
-                // 감정 상태
-                Text(
-                  _getStatusLabel(expense.status),
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: _getStatusColor(expense.status),
-                  ),
-                ),
-                // 메모 (있는 경우)
-                if (expense.memo != null && expense.memo!.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    '메모: ${expense.memo}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
                 ],
-              ],
+              ),
             ),
-          ),
 
-          // 금액
-          Text(
-            '${NumberFormat('#,###').format(expense.amount)}원',
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+            // 금액
+            Text(
+              '${NumberFormat('#,###').format(expense.amount)}원',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
-          ),
-        ],
+          ],
         ),
       ),
     );
+  }
+
+  String _getStatusEmoji(ExpenseStatus status) {
+    switch (status) {
+      case ExpenseStatus.good:
+        return '😊';
+      case ExpenseStatus.normal:
+        return '😐';
+      case ExpenseStatus.regret:
+        return '😕';
+      case ExpenseStatus.bad:
+        return '😩';
+    }
   }
 
   Color _getCategoryColor(ExpenseCategory category) {
