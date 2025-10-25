@@ -631,4 +631,189 @@ void main() {
       expect(find.text('별로였음'), findsOneWidget);
     });
   });
+
+  group('AddExpenseScreen 감정 변경 이력 테스트', () {
+    testWidgets('수정 모드에서 감정을 변경하면 변경 사유 필드가 표시된다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '점심 식사',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 초기에는 변경 사유 필드가 없음
+      expect(find.text('변경 사유'), findsNothing);
+
+      // 감정을 변경
+      await tester.dragUntilVisible(
+        find.text('아까운 돈'),
+        find.byType(SingleChildScrollView),
+        const Offset(0, -100),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('아까운 돈'));
+      await tester.pumpAndSettle();
+
+      // 변경 사유 필드가 표시됨
+      expect(find.text('변경 사유'), findsOneWidget);
+      expect(find.widgetWithText(TextField, '왜 생각이 바뀌었나요?'), findsOneWidget);
+    });
+
+    testWidgets('감정 변경 시 변경 사유를 입력하지 않으면 저장할 수 없다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '점심 식사',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 감정을 변경
+      await tester.dragUntilVisible(
+        find.text('후회한 돈'),
+        find.byType(SingleChildScrollView),
+        const Offset(0, -100),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('후회한 돈'));
+      await tester.pumpAndSettle();
+
+      // 변경 사유를 입력하지 않고 저장 시도
+      await tester.dragUntilVisible(
+        find.text('수정'),
+        find.byType(SingleChildScrollView),
+        const Offset(0, -200),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('수정'));
+      await tester.pumpAndSettle();
+
+      // 에러 메시지 확인
+      expect(find.text('감정 변경 사유를 입력해주세요'), findsOneWidget);
+    });
+
+    testWidgets('감정 변경 시 변경 사유를 입력하면 저장할 수 있다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '점심 식사',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 감정을 변경
+      await tester.dragUntilVisible(
+        find.text('아까운 돈'),
+        find.byType(SingleChildScrollView),
+        const Offset(0, -100),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('아까운 돈'));
+      await tester.pumpAndSettle();
+
+      // 변경 사유 입력
+      final reasonField = find.widgetWithText(TextField, '왜 생각이 바뀌었나요?');
+      await tester.enterText(reasonField, '생각보다 별로였음');
+      await tester.pumpAndSettle();
+
+      // 저장
+      await tester.dragUntilVisible(
+        find.text('수정'),
+        find.byType(SingleChildScrollView),
+        const Offset(0, -200),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('수정'));
+      await tester.pumpAndSettle();
+
+      // 화면이 닫혔는지 확인
+      expect(find.byType(AddExpenseScreen), findsNothing);
+    });
+
+    testWidgets('감정을 변경하지 않으면 변경 사유 필드가 표시되지 않는다', (tester) async {
+      final expense = Expense(
+        id: '1',
+        title: '점심 식사',
+        amount: 10000,
+        category: ExpenseCategory.food,
+        status: ExpenseStatus.good,
+        date: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            expenseServiceProvider.overrideWithValue(MockExpenseService()),
+          ],
+          child: MaterialApp(home: AddExpenseScreen(expense: expense)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // 제목만 변경
+      final titleField = find.widgetWithText(TextField, '점심 식사');
+      await tester.enterText(titleField, '저녁 식사');
+      await tester.pumpAndSettle();
+
+      // 변경 사유 필드가 표시되지 않음
+      expect(find.text('변경 사유'), findsNothing);
+
+      // 저장 가능
+      await tester.dragUntilVisible(
+        find.text('수정'),
+        find.byType(SingleChildScrollView),
+        const Offset(0, -200),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('수정'));
+      await tester.pumpAndSettle();
+
+      // 화면이 닫혔는지 확인
+      expect(find.byType(AddExpenseScreen), findsNothing);
+    });
+  });
 }
