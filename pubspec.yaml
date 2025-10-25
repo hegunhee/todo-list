@@ -20,12 +20,20 @@ dependencies:
   firebase_core: ^4.2.0
   firebase_crashlytics: ^5.0.3
 
+  # Local Database
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.5
+
   pedantic_mono: ^1.34.0
   http: ^1.5.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.13
 
 flutter:
   uses-material-design: true

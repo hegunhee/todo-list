@@ -7,8 +7,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expense_tracker/core/controllers/theme_controller.dart';
 import 'package:expense_tracker/core/themes/app_theme.dart';
+import 'package:expense_tracker/features/expense/models/expense.dart';
 import 'package:expense_tracker/features/expense/screens/expense_list_screen.dart';
 import 'package:expense_tracker/firebase_options.dart';
 
@@ -17,6 +19,14 @@ void main() {
   runZonedGuarded<Future<void>>(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      // Hive 초기화
+      await Hive.initFlutter();
+      
+      // Hive 어댑터 등록
+      Hive.registerAdapter(ExpenseCategoryAdapter());
+      Hive.registerAdapter(ExpenseStatusAdapter());
+      Hive.registerAdapter(ExpenseAdapter());
 
       // Firebase 초기화
       await Firebase.initializeApp(

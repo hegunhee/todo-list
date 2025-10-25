@@ -1,10 +1,24 @@
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:expense_tracker/features/expense/models/expense.dart';
 
 /// 지출 데이터 처리 서비스
 class ExpenseService {
-  /// 샘플 데이터
-  List<Expense> getSampleExpenses() {
-    return [
+  static const String _boxName = 'expenses';
+  Box<Expense>? _box;
+
+  /// Hive Box 초기화
+  Future<void> init() async {
+    _box = await Hive.openBox<Expense>(_boxName);
+    
+    // 첫 실행 시 샘플 데이터 추가
+    if (_box!.isEmpty) {
+      await _addSampleData();
+    }
+  }
+
+  /// 샘플 데이터 추가
+  Future<void> _addSampleData() async {
+    final sampleExpenses = [
       Expense(
         id: '1',
         title: '친구랑 점심',
@@ -51,23 +65,61 @@ class ExpenseService {
         memo: '세일할 때 샀다!',
       ),
     ];
+
+    for (final expense in sampleExpenses) {
+      await _box!.put(expense.id, expense);
+    }
+  }
+
+  /// 모든 지출 조회
+  List<Expense> getAllExpenses() {
+    if (_box == null) return [];
+    return _box!.values.toList()
+      ..sort((a, b) => b.date.compareTo(a.date)); // 최신순 정렬
   }
 
   /// 지출 추가
   Future<void> addExpense(Expense expense) async {
-    // TODO: 실제 저장 로직 (Firebase, Local DB 등)
-    await Future.delayed(const Duration(milliseconds: 100));
+    await _box?.put(expense.id, expense);
   }
 
   /// 지출 수정
   Future<void> updateExpense(Expense expense) async {
-    // TODO: 실제 수정 로직
-    await Future.delayed(const Duration(milliseconds: 100));
+    await _box?.put(expense.id, expense);
   }
 
   /// 지출 삭제
   Future<void> deleteExpense(String id) async {
-    // TODO: 실제 삭제 로직
-    await Future.delayed(const Duration(milliseconds: 100));
+    await _box?.delete(id);
+  }
+
+  /// 제목으로 검색 (향후 검색 기능용)
+  List<Expense> searchByTitle(String query) {
+    if (_box == null || query.isEmpty) return getAllExpenses();
+    
+    return _box!.values
+        .where((expense) => expense.title.toLowerCase().contains(query.toLowerCase()))
+        .toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
+  }
+
+  /// 카테고리별 필터링
+  List<Expense> filterByCategory(ExpenseCategory category) {
+    if (_box == null) return [];
+    
+    return _box!.values
+        .where((expense) => expense.category == category)
+        .toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
+  }
+
+  /// 상태별 필터링
+  List<Expense> filterByStatus(ExpenseStatus status) {
+    if (_box == null) return [];
+    
+    return _box!.values
+        .where((expense) => expense.status == status)
+        .toList()
+      ..sort((a, b) => b.date.compareTo(a.date));
   }
 }
