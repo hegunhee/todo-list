@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expense_tracker/features/expense/models/expense.dart';
 import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
+import 'package:expense_tracker/features/expense/widgets/category_selector_widget.dart';
+import 'package:expense_tracker/features/expense/widgets/status_selector_widget.dart';
+import 'package:expense_tracker/features/expense/widgets/amount_input_field.dart';
 
 /// 지출 추가/수정 화면
 class AddExpenseScreen extends ConsumerStatefulWidget {
@@ -258,121 +261,33 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
 
             const SizedBox(height: 24),
 
-            // 금액
-            const Text(
-              '금액',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextField(
+            // 금액 (위젯으로 분리)
+            AmountInputField(
               controller: _amountController,
-              keyboardType: TextInputType.number,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(7), // 1,000,000 = 7자리
-                _ThousandsSeparatorInputFormatter(),
-              ],
-              decoration: InputDecoration(
-                hintText: '₩0',
-                hintStyle: const TextStyle(color: Color(0xFF666666)),
-                filled: true,
-                fillColor: const Color(0xFFF5F5F5),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-              ),
-              onChanged: (value) {
-                final amount = int.tryParse(value.replaceAll(',', '')) ?? 0;
-                if (amount > 1000000) {
-                  _amountController.text = '1,000,000';
-                  _amountController.selection = TextSelection.fromPosition(
-                    TextPosition(offset: _amountController.text.length),
-                  );
-                  
-                  // 토스트 메시지 표시
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('금액은 100만원을 초과할 수 없습니다'),
-                      duration: Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                }
+            ),
+
+            const SizedBox(height: 24),
+
+            // 지출 카테고리 (위젯으로 분리)
+            CategorySelectorWidget(
+              selectedCategory: _selectedCategory,
+              onChanged: (category) {
+                setState(() {
+                  _selectedCategory = category;
+                });
               },
             ),
 
             const SizedBox(height: 24),
 
-            // 지출 카테고리
-            const Text(
-              '지출 카테고리',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: ExpenseCategory.values.map((category) {
-                final isSelected = _selectedCategory == category;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 12),
-                  child: _CategoryChip(
-                    label: category.label,
-                    icon: category.icon,
-                    isSelected: isSelected,
-                    onTap: () {
-                      setState(() {
-                        _selectedCategory = category;
-                      });
-                    },
-                  ),
-                );
-              }).toList(),
-            ),
-
-            const SizedBox(height: 24),
-
-            // 감정 카테고리
-            const Text(
-              '감정 카테고리',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: ExpenseStatus.values.map((status) {
-                final isSelected = _selectedStatus == status;
-                return _EmotionChip(
-                  label: status.label,
-                  color: status.color,
-                  isSelected: isSelected,
-                  onTap: () {
-                    setState(() {
-                      _selectedStatus = status;
-                    });
-                  },
-                );
-              }).toList(),
+            // 감정 카테고리 (위젯으로 분리)
+            StatusSelectorWidget(
+              selectedStatus: _selectedStatus,
+              onChanged: (status) {
+                setState(() {
+                  _selectedStatus = status;
+                });
+              },
             ),
 
             // 감정 변경 사유 (감정이 변경된 경우에만 표시)
@@ -476,153 +391,5 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
         ),
       ),
     );
-  }
-}
-
-/// 카테고리 칩
-class _CategoryChip extends StatelessWidget {
-  const _CategoryChip({
-    required this.label,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final String label;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? const Color(0xFF4CAF50) : const Color(0xFFE0E0E0),
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? const Color(0xFF4CAF50) : const Color(0xFF666666),
-              size: 28,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: isSelected ? const Color(0xFF4CAF50) : const Color(0xFF666666),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// 감정 칩
-class _EmotionChip extends StatelessWidget {
-  const _EmotionChip({
-    required this.label,
-    required this.color,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final String label;
-  final Color color;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: (MediaQuery.of(context).size.width - 64) / 2,
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? color : const Color(0xFFE0E0E0),
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          children: [
-            Text(
-              _getEmoji(label),
-              style: const TextStyle(fontSize: 32),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: isSelected ? color : const Color(0xFF666666),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _getEmoji(String label) {
-    switch (label) {
-      case '잘 쓴 돈':
-        return '😊';
-      case '그저 그런 돈':
-        return '😐';
-      case '아까운 돈':
-        return '😕';
-      case '후회한 돈':
-        return '😩';
-      default:
-        return '😊';
-    }
-  }
-}
-
-/// 천 단위 구분 기호 포맷터
-class _ThousandsSeparatorInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    if (newValue.text.isEmpty) {
-      return newValue;
-    }
-
-    final number = int.tryParse(newValue.text.replaceAll(',', ''));
-    if (number == null) {
-      return oldValue;
-    }
-
-    final formatted = _formatNumber(number);
-    return TextEditingValue(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
-  }
-
-  String _formatNumber(int number) {
-    return number.toString().replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]},',
-        );
   }
 }
