@@ -29,31 +29,28 @@ class AmountInputField extends StatelessWidget {
         TextField(
           controller: controller,
           keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            _ThousandsSeparatorInputFormatter(),
-          ],
           style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+            fontSize: 16,
             color: Colors.black,
           ),
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(7), // 1,000,000 = 7자리
+            _ThousandsSeparatorInputFormatter(),
+          ],
           decoration: InputDecoration(
-            hintText: '0',
-            hintStyle: const TextStyle(color: Color(0xFF999999)),
-            suffixText: '원',
-            suffixStyle: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF666666),
-            ),
+            hintText: '₩0',
+            hintStyle: const TextStyle(color: Color(0xFF666666)),
             filled: true,
             fillColor: const Color(0xFFF5F5F5),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.all(20),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
           ),
         ),
       ],

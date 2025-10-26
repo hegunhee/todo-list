@@ -33,6 +33,29 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   @override
   void initState() {
     super.initState();
+    
+    // 금액 입력 제한 리스너
+    _amountController.addListener(() {
+      final text = _amountController.text.replaceAll(',', '');
+      final amount = int.tryParse(text) ?? 0;
+      
+      if (amount > 1000000) {
+        _amountController.text = '1,000,000';
+        _amountController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _amountController.text.length),
+        );
+        
+        // 토스트 메시지 표시
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('금액은 100만원을 초과할 수 없습니다'),
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    });
+    
     // 수정 모드인 경우 기존 데이터로 초기화
     if (_isEditMode) {
       _titleController.text = widget.expense!.title;
