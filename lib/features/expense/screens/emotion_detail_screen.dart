@@ -266,7 +266,7 @@ class _ExpenseCard extends ConsumerWidget {
                       '${_getStatusEmoji(expense.previousStatus!)} → ${_getStatusEmoji(expense.status)} ${expense.statusChangeReason}',
                       style: TextStyle(
                         fontSize: 12,
-                        color: expense.status.color,
+                        color: _getStatusColor(expense.status),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -314,6 +314,19 @@ class _ExpenseCard extends ConsumerWidget {
         return '😕';
       case ExpenseStatus.bad:
         return '😩';
+    }
+  }
+
+  Color _getStatusColor(ExpenseStatus status) {
+    switch (status) {
+      case ExpenseStatus.good:
+        return const Color(0xFF4CAF50);
+      case ExpenseStatus.normal:
+        return const Color(0xFF9E9E9E);
+      case ExpenseStatus.regret:
+        return const Color(0xFFFF9800);
+      case ExpenseStatus.bad:
+        return const Color(0xFFF44336);
     }
   }
 
