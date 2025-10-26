@@ -1,9 +1,6 @@
 import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -64,7 +61,7 @@ void main() {
     (error, stack) {
       // Zone에서 캐치되지 않은 에러 처리
       // FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      print('Uncaught error: $error');
+      debugPrint('Uncaught error: $error');
     },
   );
 }
