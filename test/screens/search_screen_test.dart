@@ -34,7 +34,7 @@ void main() {
       
       // 검색 필드 확인
       expect(find.byType(TextField), findsOneWidget);
-      expect(find.text('지출 이름, 메모 검색'), findsOneWidget);
+      expect(find.text('지출 이름으로 검색'), findsOneWidget);
     });
 
     testWidgets('검색 전에는 안내 메시지가 표시된다', (tester) async {
@@ -50,7 +50,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // 안내 메시지 확인
-      expect(find.text('지출 내역을 검색해보세요'), findsOneWidget);
+      expect(find.text('지출 이름으로 검색해보세요'), findsOneWidget);
       expect(find.byIcon(Icons.search), findsWidgets);
     });
 
@@ -248,7 +248,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // 안내 메시지 다시 표시
-      expect(find.text('지출 내역을 검색해보세요'), findsOneWidget);
+      expect(find.text('지출 이름으로 검색해보세요'), findsOneWidget);
     });
 
     testWidgets('부분 검색이 가능하다', (tester) async {

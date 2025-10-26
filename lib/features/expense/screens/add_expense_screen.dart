@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:expense_tracker/features/expense/models/expense.dart';
 import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
-import 'package:expense_tracker/features/expense/widgets/category_selector_widget.dart';
-import 'package:expense_tracker/features/expense/widgets/status_selector_widget.dart';
-import 'package:expense_tracker/features/expense/widgets/amount_input_field.dart';
+import 'package:expense_tracker/features/expense/widgets/expense_form/category_selector_widget.dart';
+import 'package:expense_tracker/features/expense/widgets/expense_form/status_selector_widget.dart';
+import 'package:expense_tracker/features/expense/widgets/expense_form/amount_input_field.dart';
 
 /// 지출 추가/수정 화면
 class AddExpenseScreen extends ConsumerStatefulWidget {
