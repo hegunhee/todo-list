@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'package:expense_tracker/features/expense/models/expense.dart';
 
 /// 검색 결과 아이템 위젯
 class SearchResultItem extends StatelessWidget {
-  final Expense expense;
-  final VoidCallback onTap;
-
+  /// 생성자
   const SearchResultItem({
     super.key,
     required this.expense,
     required this.onTap,
   });
+
+  /// 지출 데이터
+  final Expense expense;
+  /// 탭 콜백
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {

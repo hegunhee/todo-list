@@ -1,6 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
+
 import 'package:expense_tracker/features/expense/models/expense.dart';
 import 'package:expense_tracker/features/expense/services/expense_service.dart';
 
@@ -111,7 +113,7 @@ void main() {
     test('지출이 최신순으로 정렬된다', () {
       final expenses = service.getAllExpenses();
       
-      for (int i = 0; i < expenses.length - 1; i++) {
+      for (var i = 0; i < expenses.length - 1; i++) {
         expect(
           expenses[i].date.isAfter(expenses[i + 1].date) ||
           expenses[i].date.isAtSameMomentAs(expenses[i + 1].date),

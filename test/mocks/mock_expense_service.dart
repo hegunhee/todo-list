@@ -35,7 +35,9 @@ class MockExpenseService implements ExpenseService {
 
   @override
   List<Expense> searchByTitle(String query) {
-    if (query.isEmpty) return getAllExpenses();
+    if (query.isEmpty) {
+      return getAllExpenses();
+    }
     
     return _expenses
         .where((expense) => expense.title.toLowerCase().contains(query.toLowerCase()))

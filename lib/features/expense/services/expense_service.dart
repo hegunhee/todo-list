@@ -1,4 +1,5 @@
 import 'package:hive_flutter/hive_flutter.dart';
+
 import 'package:expense_tracker/features/expense/models/expense.dart';
 
 /// 지출 데이터 처리 서비스
@@ -13,7 +14,9 @@ class ExpenseService {
 
   /// 모든 지출 조회
   List<Expense> getAllExpenses() {
-    if (_box == null) return [];
+    if (_box == null) {
+      return [];
+    }
     return _box!.values.toList()
       ..sort((a, b) => b.date.compareTo(a.date)); // 최신순 정렬
   }
@@ -35,7 +38,9 @@ class ExpenseService {
 
   /// 제목으로 검색 (향후 검색 기능용)
   List<Expense> searchByTitle(String query) {
-    if (_box == null || query.isEmpty) return getAllExpenses();
+    if (_box == null || query.isEmpty) {
+      return getAllExpenses();
+    }
     
     return _box!.values
         .where((expense) => expense.title.toLowerCase().contains(query.toLowerCase()))
@@ -45,7 +50,9 @@ class ExpenseService {
 
   /// 카테고리별 필터링
   List<Expense> filterByCategory(ExpenseCategory category) {
-    if (_box == null) return [];
+    if (_box == null) {
+      return [];
+    }
     
     return _box!.values
         .where((expense) => expense.category == category)
@@ -55,7 +62,9 @@ class ExpenseService {
 
   /// 상태별 필터링
   List<Expense> filterByStatus(ExpenseStatus status) {
-    if (_box == null) return [];
+    if (_box == null) {
+      return [];
+    }
     
     return _box!.values
         .where((expense) => expense.status == status)

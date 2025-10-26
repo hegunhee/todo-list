@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'package:expense_tracker/features/expense/models/expense.dart';
 
 /// 지출 요약 카드 위젯
 class ExpenseSummaryCard extends StatelessWidget {
-  final int totalAmount;
-  final ExpenseStatus? selectedFilter;
-
+  /// 생성자
   const ExpenseSummaryCard({
     super.key,
     required this.totalAmount,
     this.selectedFilter,
   });
+
+  /// 총 금액
+  final int totalAmount;
+  /// 선택된 필터
+  final ExpenseStatus? selectedFilter;
 
   @override
   Widget build(BuildContext context) {

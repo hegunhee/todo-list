@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
+import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
 import 'package:expense_tracker/features/expense/models/expense.dart';
 import 'package:expense_tracker/features/expense/screens/add_expense_screen.dart';
-import 'package:expense_tracker/features/expense/controllers/expense_controller.dart';
 
 /// 지출 카드 위젯
 class ExpenseCardWidget extends ConsumerWidget {
-  final Expense expense;
-
+  /// 생성자
   const ExpenseCardWidget({
     super.key,
     required this.expense,
   });
+
+  /// 지출 데이터
+  final Expense expense;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,7 +38,7 @@ class ExpenseCardWidget extends ConsumerWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),

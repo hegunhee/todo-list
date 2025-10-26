@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'package:expense_tracker/features/expense/models/expense.dart';
 
 /// 감정별 요약 카드 위젯
 class EmotionSummaryCard extends StatelessWidget {
-  final ExpenseStatus status;
-  final int count;
-  final int totalAmount;
-
+  /// 생성자
   const EmotionSummaryCard({
     super.key,
     required this.status,
     required this.count,
     required this.totalAmount,
   });
+
+  /// 감정 상태
+  final ExpenseStatus status;
+  /// 지출 건수
+  final int count;
+  /// 총 금액
+  final int totalAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,7 @@ class EmotionSummaryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: _getStatusColor(status).withOpacity(0.3),
+            color: _getStatusColor(status).withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
